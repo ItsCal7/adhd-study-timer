@@ -79,6 +79,11 @@ with col2:
             if i==st.session_state.activeTaskCounter:
                 st.badge("Active", icon=":material/progress_activity:", color="green")
             st.header(item, divider=True)
+        if st.button("Randomize To-Do List Order"):
+            items = list(st.session_state.todoList.items())
+            random.shuffle(items)
+            st.session_state.todoList = dict(items)
+            st.rerun()
         if st.button("Configure To-Do List"):
             st.switch_page("listConfig.py")
 
