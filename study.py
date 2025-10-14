@@ -2,7 +2,7 @@ import streamlit as st
 import random, asyncio, base64
 
 if 'todoList' not in st.session_state:
-    st.session_state.todoList = {"Study Greek": "", "Java Project": "", "Clean Room": ""}
+    st.session_state.todoList = ["Study Greek", "Java Project", "Clean Room"]
 if 'activeItem' not in st.session_state:
     st.session_state.activeItem = 1
 
@@ -80,9 +80,8 @@ with col2:
                 st.badge("Active", icon=":material/progress_activity:", color="green")
             st.header(item, divider=True)
         if st.button("Randomize To-Do List Order"):
-            items = list(st.session_state.todoList.items())
-            random.shuffle(items)
-            st.session_state.todoList = dict(items)
+            random.shuffle(st.session_state.todoList)
+            st.session_state.activeTaskCounter = 1
             st.rerun()
         if st.button("Configure To-Do List"):
             st.switch_page("listConfig.py")
