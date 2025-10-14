@@ -9,5 +9,7 @@ st.markdown("- 20 minutes of break")
 st.markdown("- Continue the cycle")
 st.write("This works with homework, cleaning, coding, and basically any other chore or task I have to do.")
 st.write("So I thought I'd make a lil customizable timer app")
+st.write("Just note that due to how Streamlit works, reloading the page will reset all the information")
+st.write("Info will be stored as you navigate between pages, however")
 if st.button("Click here to get started"):
     st.switch_page("timerConfig.py")
