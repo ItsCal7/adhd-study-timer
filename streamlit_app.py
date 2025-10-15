@@ -1,5 +1,7 @@
 import streamlit as st
 
+st.session_state.debug = False
+
 pages = {
     "Your account": [
         st.Page("home.py", title="Info"),
