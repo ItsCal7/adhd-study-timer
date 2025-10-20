@@ -132,6 +132,8 @@ with st.empty(): #Timer and TodoList Display
                     random.shuffle(st.session_state.todoList)
                     st.session_state.activeTaskCounter = 1
                     st.rerun()
+                if st.session_state.isTimerRunning:
+                    st.caption("Randomizing will restart the timer")
 
                 i = 0
                 for item in st.session_state.todoList:
