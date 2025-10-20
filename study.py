@@ -31,6 +31,8 @@ if "activeTaskCounter" not in st.session_state:
 
 if "playCelebration" not in st.session_state:
     st.session_state.playCelebration = False
+if "newSession" not in st.session_state:
+    st.session_state.newSession = True
 # endregion
 
 # region Functions
@@ -80,6 +82,10 @@ if st.session_state.playCelebration: #Play Celebration Music
     with st.empty():
         play_audio("heart_container.mp3")
     st.session_state.playCelebration = False
+
+if st.session_state.newSession:
+    st.toast("Got an idea? [Tell me](https://callumclark.hipporello.net/desk/form/8a9e8f60dc444875910c185284dac834)")
+    st.session_state.newSession = False
 
 col1, col2 = st.columns(2, gap="small", vertical_alignment="center", border=True)
 
@@ -134,6 +140,7 @@ with st.empty(): #Timer and TodoList Display
                     st.rerun()
                 if st.session_state.isTimerRunning:
                     st.caption("Randomizing will restart the timer")
+                st.divider()
 
                 i = 0
                 for item in st.session_state.todoList:

@@ -13,3 +13,6 @@ st.write("Just note that due to how Streamlit works, reloading the page will res
 st.write("Info will be stored as you navigate between pages, however")
 if st.button("Click here to get started"):
     st.switch_page("timerConfig.py")
+
+
+st.caption("Have an idea or found a bug? [Tell me!](https://callumclark.hipporello.net/desk/form/8a9e8f60dc444875910c185284dac834)")
