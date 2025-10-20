@@ -21,8 +21,16 @@ if "isBreak" not in st.session_state:
     st.session_state.isBreak = False
 if "breakCounter" not in st.session_state:
     st.session_state.breakCounter = 1
+if 'differentBreaks' not in st.session_state:
+    st.session_state.differentBreaks = False
+if 'breakLength' not in st.session_state:
+    st.session_state.breakLength = st.session_state.timerLength
+
 if "activeTaskCounter" not in st.session_state:
     st.session_state.activeTaskCounter = 1
+
+if "playCelebration" not in st.session_state:
+    st.session_state.playCelebration = False
 # endregion
 
 # region Functions
@@ -48,22 +56,10 @@ async def count_down(ts):
         time_now = '{:02d}:{:02d}'.format(0, 0)
         st.title(f"{time_now}")
         st.session_state.isTimerRunning = False
-        with st.empty():
-            play_audio("heart_container.mp3")
-# endregion
 
-
-st.title("Study Time")
-
-col1, col2 = st.columns(2, gap="small", vertical_alignment="center", border=True)
-
-with col1: #Timer
-    if st.button("Start Session"):
-        st.session_state.isTimerRunning = True
         st.session_state.breakCounter += 1
         if st.session_state.breakCounter > st.session_state.breakNumber:
             st.session_state.breakCounter = 1
-
 
         if (st.session_state.breakCounter % st.session_state.breakNumber) == 0:
             st.session_state.isBreak = True
@@ -73,30 +69,22 @@ with col1: #Timer
             st.session_state.activeTaskCounter += 1
             if st.session_state.activeTaskCounter > len(st.session_state.todoList):
                 st.session_state.activeTaskCounter = 1
+       
+        st.session_state.playCelebration = True
+        st.rerun()
+# endregion
 
-        asyncio.run(count_down(st.session_state.timerLength * 60))
-        
-with col2: #List
-    if st.session_state.isBreak:
-        st.header("Break Time")
-    else:
-        if st.button("Randomize To-Do List Order"):
-            random.shuffle(st.session_state.todoList)
-            st.session_state.activeTaskCounter = 1
-            st.rerun()
+st.title("Study Time")
 
-        i = 0
-        for item in st.session_state.todoList:
-            i += 1
-            if i==st.session_state.activeTaskCounter:
-                st.badge("Active", icon=":material/progress_activity:", color="green")
-            st.header(item, divider=True)
-            
-        if st.button("Configure To-Do List"):
-            st.switch_page("listConfig.py")
+if st.session_state.playCelebration: #Play Celebration Music
+    with st.empty():
+        play_audio("heart_container.mp3")
+    st.session_state.playCelebration = False
+
+col1, col2 = st.columns(2, gap="small", vertical_alignment="center", border=True)
 
 with st.sidebar: #Timer Config
-    st.caption("Making Any Changes Will Cancel Current Session")
+    st.caption("Making Any Changes Will Restart the Timer")
     timerLength = st.slider("Cycle Length", 1, 60, st.session_state.timerLength)
     if timerLength == 1:
         st.write(timerLength, " minute")
@@ -112,6 +100,51 @@ with st.sidebar: #Timer Config
     else:
         st.write("Every ", breakNumber, " cycles")
     
+    differentBreaks = st.checkbox("I want breaks to be a different length than normal cycles", value=st.session_state.differentBreaks)
+    if differentBreaks:
+        breakLength = st.slider("How long is each break?", 1, 60, st.session_state.breakLength)
+        if breakLength == 1:
+            st.write(breakLength, " minute")
+        else:
+            st.write(breakLength, "minutes")
+
+    
     if st.button("Save Changes"):
         st.session_state.timerLength = timerLength
         st.session_state.breakNumber = breakNumber
+        st.session_state.differentBreaks = differentBreaks
+
+        if differentBreaks:
+            st.session_state.breakLength = breakLength
+        else:
+            st.session_state.breakLength = st.session_state.timerLength
+
+with st.empty(): #Timer and TodoList Display
+    with col1:
+        if st.button("Start Session"): # Timer Trigger
+            st.session_state.isTimerRunning = True
+
+        with col2: #List
+            if st.session_state.isBreak:
+                st.header("Break Time")
+            else:
+                if st.button("Randomize To-Do List Order"):
+                    random.shuffle(st.session_state.todoList)
+                    st.session_state.activeTaskCounter = 1
+                    st.rerun()
+
+                i = 0
+                for item in st.session_state.todoList:
+                    i += 1
+                    if i==st.session_state.activeTaskCounter:
+                        st.badge("Active", icon=":material/progress_activity:", color="green")
+                    st.header(item, divider=True)
+                    
+                if st.button("Configure To-Do List"):
+                    st.switch_page("listConfig.py")
+
+        if st.session_state.isTimerRunning: #Timer Display
+            if st.session_state.isBreak:
+                asyncio.run(count_down(st.session_state.breakLength * 60))
+            else:
+                asyncio.run(count_down(st.session_state.timerLength * 60))
