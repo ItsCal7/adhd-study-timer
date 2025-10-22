@@ -26,13 +26,8 @@ if 'differentBreaks' not in st.session_state:
 if 'breakLength' not in st.session_state:
     st.session_state.breakLength = st.session_state.timerLength
 
-if "activeTaskCounter" not in st.session_state:
-    st.session_state.activeTaskCounter = 1
-
 if "playCelebration" not in st.session_state:
     st.session_state.playCelebration = False
-if "newSession" not in st.session_state:
-    st.session_state.newSession = True
 # endregion
 
 # region Functions
@@ -68,13 +63,40 @@ async def count_down(ts):
         else:
             st.session_state.isBreak = False
 
-            st.session_state.activeTaskCounter += 1
-            if st.session_state.activeTaskCounter > len(st.session_state.todoList):
-                st.session_state.activeTaskCounter = 1
+            st.session_state.activeItem += 1
+            if st.session_state.activeItem > len(st.session_state.todoList):
+                st.session_state.activeItem = 1
        
         st.session_state.playCelebration = True
         st.rerun()
 # endregion
+
+footer="""<style>
+a:link , a:visited{
+color: red;
+background-color: transparent;
+text-decoration: underline;
+}
+
+a:hover,  a:active {
+color: pink;
+background-color: transparent;
+text-decoration: underline;
+}
+
+.footer {
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+color: white;
+text-align: center;
+}
+</style>
+<div class="footer">
+<p>Got a suggestion? Found a Bug? <a style='display: block; text-align: center;' href="https://callumclark.hipporello.net/desk/form/8a9e8f60dc444875910c185284dac834" target="_blank">Tell Me</a></p>
+</div>
+"""
 
 st.title("Study Time")
 
@@ -82,10 +104,6 @@ if st.session_state.playCelebration: #Play Celebration Music
     with st.empty():
         play_audio("heart_container.mp3")
     st.session_state.playCelebration = False
-
-if st.session_state.newSession:
-    st.toast("Got an idea? [Tell me](https://callumclark.hipporello.net/desk/form/8a9e8f60dc444875910c185284dac834)")
-    st.session_state.newSession = False
 
 col1, col2 = st.columns(2, gap="small", vertical_alignment="center", border=True)
 
@@ -131,12 +149,12 @@ with st.empty(): #Timer and TodoList Display
             st.session_state.isTimerRunning = True
 
         with col2: #List
+            st.badge("Cycle Number: " + str(st.session_state.activeItem), color="blue")
             if st.session_state.isBreak:
                 st.header("Break Time")
             else:
                 if st.button("Randomize To-Do List Order"):
                     random.shuffle(st.session_state.todoList)
-                    st.session_state.activeTaskCounter = 1
                     st.rerun()
                 if st.session_state.isTimerRunning:
                     st.caption("Randomizing will restart the timer")
@@ -145,7 +163,7 @@ with st.empty(): #Timer and TodoList Display
                 i = 0
                 for item in st.session_state.todoList:
                     i += 1
-                    if i==st.session_state.activeTaskCounter:
+                    if i==st.session_state.activeItem:
                         st.badge("Active", icon=":material/progress_activity:", color="green")
                     st.header(item, divider=True)
                     
@@ -157,3 +175,4 @@ with st.empty(): #Timer and TodoList Display
                 asyncio.run(count_down(st.session_state.breakLength * 60))
             else:
                 asyncio.run(count_down(st.session_state.timerLength * 60))
+st.markdown(footer,unsafe_allow_html=True)
