@@ -1,4 +1,4 @@
 [client]
 showSidebarNavigation = false
 [server]
-websocketPingInterval = 1
+websocketPingInterval = 60
