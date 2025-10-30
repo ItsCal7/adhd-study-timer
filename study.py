@@ -1,5 +1,5 @@
 import streamlit as st
-import random, asyncio, base64
+import random, time, base64
 
 # region Initializing Session Variables
 if 'todoList' not in st.session_state:
@@ -42,13 +42,13 @@ def play_audio(file_path: str):
             """
         st.markdown(md, unsafe_allow_html=True)
 
-async def count_down(ts):
+def count_down(ts):
     with st.empty():
         while ts:
             mins, secs = divmod(ts, 60)
             time_now = '{:02d}:{:02d}'.format(mins, secs)
             st.title(f"{time_now}")
-            r = await asyncio.sleep(1)
+            r = time.sleep(1)
             ts -= 1
         time_now = '{:02d}:{:02d}'.format(0, 0)
         st.title(f"{time_now}")
@@ -172,7 +172,7 @@ with st.empty(): #Timer and TodoList Display
 
         if st.session_state.isTimerRunning: #Timer Display
             if st.session_state.isBreak:
-                asyncio.run(count_down(st.session_state.breakLength * 60))
+                count_down(st.session_state.breakLength * 60)
             else:
-                asyncio.run(count_down(st.session_state.timerLength * 60))
+                count_down(st.session_state.timerLength * 60)
 st.markdown(footer,unsafe_allow_html=True)
