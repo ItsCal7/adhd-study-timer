@@ -1,19 +1,14 @@
-# 🎈 Blank app template
+ADHD Study Timer
 
-A simple Streamlit app template for you to modify!
+This is a streamlit app that helps with a study technique that I've been working with this semester
+- 20 minutes studying one thing
+- 20 minutes studying another thing
+- 20 minutes of break
+- Rinse, and Repeat
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
+This works with homework, cleaning, coding, and basically any other chore or task I have to do.
+I was just using the timer app on my phone, but having the list next to it helps remind me what I need to be doing
+And remind me to do less important chores or tasks that I usually forget about
 
-### How to run it on your own machine
-
-1. Install the requirements
-
-   ```
-   $ pip install -r requirements.txt
-   ```
-
-2. Run the app
-
-   ```
-   $ streamlit run streamlit_app.py
-   ```
+Streamlit, while fun to learn, is not the best for this app. It doesn't deal with concurrent tasks well at all.
+I'm in the process of converting the code into Django, which is much better for the task.
